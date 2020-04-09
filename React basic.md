@@ -124,7 +124,28 @@ ReactDOM.render(element, document.getElementById('root')); 이를 root dom에 �
 
 
 
-## 변경된 부분만 업데이트 하기
+## Components and props
 
+### 컴포넌트
 
+```react
+function Welcome(props) {  return <h1>Hello, {props.name}</h1>;}
+const element = <Welcome name="Sara" />;ReactDOM.render(
+  element,
+  document.getElementById('root')
+);
+```
+
+React가 사용자 정의 컴포넌트로 작성한 엘리먼트를 발견하면 JSX 어트리뷰트와 자식을 해당 컴포넌트에 단일 객체로 전달합니다. 이 객체를 “props”라고 합니다.
+
+### Props
+
+```react
+function Welcome(props) {
+  return <h1>Hello, {props.name}</h1>;
+}
+
+const element = <Welcome name="Sara" />;
+ReactDOM.render(element, document.getElementById('root'));
+```
 
