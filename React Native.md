@@ -22,147 +22,193 @@ npx create-react-app my-app
 
 
 
-## 컴포넌트
 
-컴포넌트 활용해 React에게 화면에 표현하고 싶은 것이 무엇인지 알려주기
 
-데이터가 변경될 때 React는 컴포넌트를 효율적으로 업데이트하고 다시 렌더링
+# 문법
 
-ShoppingList는 **React 컴포넌트 클래스** 또는 **React 컴포넌트 타입**
+## View란?
 
-개별 컴포넌트는 `props`라는 매개변수를 받아오고 `render` 함수를 통해 표시할 뷰 계층 구조를 반환
+a **view** is the basic building block of UI = 모든 것 하나 하나가 뷰로 이루어져 있다
 
-[ RENDER 함수 ]
 
-`render` 함수는 화면에서 보고자 하는 *내용*을 반환, React는 설명을 전달받고 결과를 표시. 특히 `render`는 렌더링할 내용을 경량화한 **React 엘리먼트**를 반환(JSX문법)
+
+## Core Components
 
 ```react
-class ShoppingList extends React.Component {
-  render() {
-    return (
-      <div className="shopping-list">
-        <h1>Shopping List for {this.props.name}</h1>
-        <ul>
-          <li>Instagram</li>
-          <li>WhatsApp</li>
-          <li>Oculus</li>
-        </ul>
-      </div>
-    );
-  }
-}
+import React from 'react';
+import { View, Text, Image, ScrollView, TextInput } from 'react-native';
 
-// 사용 예제: <ShoppingList name="Mark" />
-```
-
-
-
-## TIC TAC TOE
-
-```
-class Board extends React.Component {
-  renderSquare(i) {
-    return <Square value={i} />;
-  }
+export default function App() {
+  return (
+    <ScrollView>
+      <Text>Some text</Text>
+      <View>
+        <Text>Some more text</Text>
+        <Image source="https://reactnative.dev/docs/assets/p_cat2.png" style={{width: 200, height: 200}}/>
+      </View>
+      <TextInput
+        style={{
+          height: 40,
+          borderColor: 'gray',
+          borderWidth: 1
+        }}
+        defaultValue="You can type here"
+      />
+    </ScrollView>
+  );
 }
 ```
 
-board의 value를 square에 전달하기
+주로 쓰이는 건 view, text, image, scrollview, textinput이 있다
+
+
+
+## Component 만들기
+
+```react
+import React from 'react';
+import { Text } from 'react-native';
+
+export default function Cat() {
+  return (
+    <Text>Hello, I am your cat!</Text>
+  );
+}
 
 ```
-class Square extends React.Component {
-  render() {
-    return (
-      <button className="square">
-        {this.props.value}
-      </button>
-    );
-  }
+
+리액트와 텍스트를 import한 후 cat이라는 함수를 정의한다.
+
+Whatever a function component returns is rendered as a **React element.**
+
+### JSX 이용 가능
+
+```jsx
+import React from 'react';
+import { Text } from 'react-native';
+
+export default function Cat() {
+  const name = "Maru";
+  return (
+    <Text>Hello, I am {name}!</Text>
+  );
 }
 ```
 
-클릭하면 alert 뜨도록
-
-```
-<button className="square" onClick={function() { alert('click'); }}>
-  {this.props.value}
-</button>
-```
-
-`onClick={() => alert('click')}`이 어떻게 동작하는지 살펴보면 `onClick` prop으로 *함수*를 전달하고 있습니다. React는 클릭했을 때에만 이 함수를 호출할 것입니다.
 
 
+## Props 이용하기
 
-### X표시 채우기 = STATE 이용하기(생성자 추가)
+```react
+import React from 'react';
+import { Text, View } from 'react-native';
 
-```
-class Square extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      value: null,
-    };
-  }
-```
+function Cat(props) {
+  return (
+    <View>
+      <Text>Hello, I am {props.name}!</Text>
+    </View>
+  );
+}
 
-React 컴포넌트는 생성자에 `this.state`를 설정하는 것으로 state를 가질 수 있습니다. 이제 Square의 현재 값을 `this.state`에 저장하고 Square를 클릭하는 경우 변경하겠습니다.
-
-(React 컴포넌트 클래스는 `생성자`를 가질 때 `super(props)` 호출 구문부터 작성)
-
-```
-  render() {
-    return (
-      <button 
-      className="square" 
-      onClick={() => this.setState({value: 'X'})}>
-        {this.state.value}
-      </button>
-    );
-  }
+export default function Cafe() {
+  return (
+    <View>
+      <Cat name="Maru" />
+      <Cat name="Jellylorum" />
+      <Cat name="Spot" />
+    </View>
+  );
+}
 ```
 
-클릭하면 state를 X로 바꾸고 그 버튼 자리에 state인 X를 표시한다.
+ Props let you customize React components.
+
+cat이라는 함수 안에 props를 넣을 것이라 설정. text안에 props로 온 것들의 name을 넣는다.
 
 
 
-## STATE 한 곳에서 관리하기
+## State
 
-여러개의 자식으로부터 데이터를 모으거나 두 개의 자식 컴포넌트들이 서로 통신하게 하려면 부모 컴포넌트에 공유 state를 정의해야 합니다. 부모 컴포넌트는 props를 사용하여 자식 컴포넌트에 state를 다시 전달할 수 있습니다. 이것은 자식 컴포넌트들이 서로 또는 부모 컴포넌트와 동기화 하도록 만듭니다.
+**state** is like a component’s personal data storage. State is useful for handling data that changes over time or that comes from user interaction.
 
+배고픈 고양이 먹이주기
+
+```react
+import React, { useState } from "react";
+import { Button, Text, View } from "react-native";
+
+function Cat(props) {
+  const [isHungry, setIsHungry] = useState(true);
+
+  return (
+    <View>
+      <Text>
+        I am {props.name}, and I am {isHungry ? "hungry" : "full"}!
+      </Text>
+      <Button
+        onPress={() => {
+          setIsHungry(false);
+        }}
+        disabled={!isHungry}
+        title={isHungry ? "Pour me some milk, please!" : "Thank you!"}
+      />
+    </View>
+  );
+}
+
+export default function Cafe() {
+  return (
+    <>
+      <Cat name="Munkustrap" />
+      <Cat name="Spot" />
+    </>
+  );
+}
 ```
-class Board extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      squares: Array(9).fill(null),
-    };
-  }
-  renderSquare(i) {
-    return <Square value={this.state.squares[i]} />;
-  }
+
+useState가 하는 일
+
+### 무언가를 바꾸려고 하면 set이 꼭 필요하다!
+
+- it creates a “state variable” with an initial value—in this case the state variable is `isHungry` and its initial value is `true`
+- it creates a function to set that state variable’s value—`setIsHungry`
+
+isHungry랑 setIsHungry 둘 다 true 상태로 시작
+
+버튼 누루면 isHungry가 false로 바뀌고 상태와 title 모두가 바뀐다.
+
+즉 버튼을 누르면 when a state-setting function like `setIsHungry` is called, its component will re-render. 
+
+
+
+## Text Input
+
+```react
+import React, { Component, useState } from 'react';
+import { Text, TextInput, View } from 'react-native';
+
+export default function PizzaTranslator() {
+  const [text, setText] = useState('');
+  return (
+    <View style={{padding: 10}}>
+      <TextInput
+        style={{height: 40}}
+        placeholder="Type here to translate!"
+        onChangeText={text => setText(text)}
+        defaultValue={text}
+      />
+      <Text style={{padding: 10, fontSize: 42}}>
+        {text.split(' ').map((word) => word && '🍕').join(' ')}
+      </Text>
+    </View>
+  );
+}
 ```
 
-상위 컴포넌트인 board에 props를 정의한다, 그 state에 9개의 array를 만들고 null로 채운다
+text를 쓰면 onChangeText가 call되어 text를 업데이트 한다
 
-사각형에 표시되는 것도 
-
-```
-class Board extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      squares: Array(9).fill(null),
-    };
-  }
-  renderSquare(i) {
-    return <Square value={this.state.squares[i]}
-    onClick={() => this.handlecClick(i)} />;
-  }
-```
-
-아래 rendersquare코드 수정하기
-
-Square가 Board를 변경할 방법이 필요(하위 컴포넌트가 상위 컴포넌트 바꾸기)
+입력된 text를 단어단위로 인식해 단어 하나 당 피자 하나로 번역하고 ` `띄어쓰기 하나로 join한다.
 
 
 
